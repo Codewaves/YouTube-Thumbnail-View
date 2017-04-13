@@ -1,0 +1,2 @@
+# YouTube-Thumbnail-View
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c0838f0b263745d3874238c60bd032ef)](https://www.codacy.com/app/Codewaves/YouTube-Thumbnail-View?utm_source=github.com&utm_medium=referral&utm_content=Codewaves/YouTube-Thumbnail-View&utm_campaign=badger)
