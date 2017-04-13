@@ -1,6 +1,30 @@
 apply plugin: 'com.android.library'
 apply from: '../dependencies.gradle'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'youtube-thumbnail-view'
+
+    publishedGroupId = 'com.codewaves.youtubethumbnailview'
+    libraryName = 'YouTube-Thumbnail-View'
+    artifact = 'youtube-thumbnail-view'
+
+    libraryDescription = 'Android view to display YouTube video thumbnail and information'
+
+    siteUrl = 'https://github.com/Codewaves/YouTube-Thumbnail-View'
+    gitUrl = 'https://github.com/Codewaves/YouTube-Thumbnail-View.git'
+
+    libraryVersion = '0.1'
+
+    developerId = 'codewaves'
+    developerName = 'Sergej Kravcenko'
+    developerEmail = 'skravcenko@codewaves.com'
+
+    licenseName = 'The MIT License'
+    licenseUrl = 'https://opensource.org/licenses/mit-license.php'
+    allLicenses = ["MIT"]
+}
+
 android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
@@ -21,3 +45,6 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:' + versions.supportLib
 }
+
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'
