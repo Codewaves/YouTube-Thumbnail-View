@@ -21,7 +21,7 @@ public class OembedVideoInfoDownloader implements VideoInfoDownloader {
    @Override
    @NonNull
    public VideoInfo download(@NonNull String url) throws IOException {
-      String encodedUrl = URLEncoder.encode(url);
+      final String encodedUrl = URLEncoder.encode(url);
       final String ombedUrl = "http://www.youtube.com/oembed?url=" + encodedUrl + "&format=json";
 
       final OkHttpClient client = new OkHttpClient();

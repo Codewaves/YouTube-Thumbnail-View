@@ -13,7 +13,7 @@ import java.io.IOException;
  * Copyright (c) 2017 Sergej Kravcenko
  */
 
-public class VideoInfoTask implements Runnable {
+class VideoInfoTask implements Runnable {
    private String url;
    private VideoInfoDownloader downloader;
    private VideoInfoDownloadListener listener;

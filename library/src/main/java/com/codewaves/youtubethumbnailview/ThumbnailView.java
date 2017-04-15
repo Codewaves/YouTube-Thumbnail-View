@@ -3,9 +3,11 @@ package com.codewaves.youtubethumbnailview;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.codewaves.youtubethumbnailview.listener.ImageDownloadListener;
 import com.codewaves.youtubethumbnailview.listener.SimpleThumbnailLoadingListener;
 import com.codewaves.youtubethumbnailview.listener.ThumbnailLoadingListener;
 import com.codewaves.youtubethumbnailview.listener.VideoInfoDownloadListener;
@@ -29,7 +32,9 @@ public class ThumbnailView extends RelativeLayout {
    private ImageView thumbnail;
    private TextView title;
 
-   int dpToPx(Context context, float dp) {
+   private ImageLoader imageLoader;
+
+   private int dpToPx(Context context, float dp) {
       final float scale = context.getResources().getDisplayMetrics().density;
       return Math.round(dp * scale);
    }
@@ -88,10 +93,14 @@ public class ThumbnailView extends RelativeLayout {
    }
 
    public void displayThumbnail(@NonNull String url) {
-      displayThumbnail(url, new SimpleThumbnailLoadingListener());
+      displayThumbnail(url, new SimpleThumbnailLoadingListener(), null);
    }
 
-   public void displayThumbnail(final @NonNull String url, @NonNull final ThumbnailLoadingListener listener) {
+   public void displayThumbnail(@NonNull String url, @NonNull ThumbnailLoadingListener listener) {
+      displayThumbnail(url, listener, null);
+   }
+
+   public void displayThumbnail(final @NonNull String url, final @NonNull ThumbnailLoadingListener listener, final @Nullable ImageLoader imageLoader) {
       listener.onLoadingStarted(url, this);
 
       ThumbnailLoader.fetchVideoInfo(url, new VideoInfoDownloadListener() {
@@ -99,6 +108,7 @@ public class ThumbnailView extends RelativeLayout {
          public void onDownloadFinished(@NonNull VideoInfo info) {
             // Update views and start thumbnail download
             title.setText(info.getTitle());
+            loadThumbnailImage(info.getThumbnailUrl());
             listener.onLoadingComplete(url, ThumbnailView.this);
          }
 
@@ -107,5 +117,14 @@ public class ThumbnailView extends RelativeLayout {
             listener.onLoadingFailed(url, ThumbnailView.this, error);
          }
       });
+   }
+
+   private void loadThumbnailImage(@NonNull String imageUrl) {
+      if (imageLoader != null) {
+         imageLoader.load(imageUrl, thumbnail);
+      }
+      else {
+         ThumbnailLoader.fetchThumbnail(imageUrl, thumbnail);
+      }
    }
 }

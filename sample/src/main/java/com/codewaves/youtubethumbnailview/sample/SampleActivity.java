@@ -23,7 +23,7 @@ public class SampleActivity extends AppCompatActivity {
       setContentView(R.layout.activity_sample);
 
       final ThumbnailView thumb = (ThumbnailView)findViewById(R.id.thumbnail);
-      thumb.displayThumbnail("https://www.youtube.com/watch?v=iCkYw3cRwLo", new ThumbnailLoadingListener() {
+      thumb.displayThumbnail("https://www.youtube.com/watch?v=iCkYw3cRwLo5", new ThumbnailLoadingListener() {
          @Override
          public void onLoadingStarted(@NonNull String url, @NonNull View view) {
             Log.i(TAG, "Thumbnail load started.");
