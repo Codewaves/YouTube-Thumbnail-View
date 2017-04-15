@@ -14,10 +14,10 @@ import java.io.IOException;
  */
 
 class VideoInfoTask implements Runnable {
-   private String url;
-   private VideoInfoDownloader downloader;
-   private VideoInfoDownloadListener listener;
-   private Handler handler;
+   private final String url;
+   private final VideoInfoDownloader downloader;
+   private final VideoInfoDownloadListener listener;
+   private final Handler handler;
 
    VideoInfoTask(@NonNull String url, @NonNull VideoInfoDownloader downloader, @NonNull VideoInfoDownloadListener listener, @NonNull Handler handler) {
       this.url = url;

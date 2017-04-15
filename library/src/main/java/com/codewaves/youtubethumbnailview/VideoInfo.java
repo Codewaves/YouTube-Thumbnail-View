@@ -6,9 +6,9 @@ package com.codewaves.youtubethumbnailview;
  */
 
 public class VideoInfo {
-   private String title;
-   private String thumbnailUrl;
-   private int length;
+   private final String title;
+   private final String thumbnailUrl;
+   private final int length;
 
    public VideoInfo(String title, String thumbnailUrl, int length) {
       this.title = title;

@@ -19,10 +19,10 @@ import okhttp3.Response;
  * Copyright (c) 2017 Sergej Kravcenko
  */
 
-public class ImageDownloadTask implements Runnable {
-   private String url;
-   private ImageDownloadListener listener;
-   private Handler handler;
+class ImageDownloadTask implements Runnable {
+   private final String url;
+   private final ImageDownloadListener listener;
+   private final Handler handler;
 
    ImageDownloadTask(@NonNull String url, @NonNull ImageDownloadListener listener, @NonNull Handler handler) {
       this.url = url;
