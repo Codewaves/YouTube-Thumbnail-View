@@ -15,3 +15,5 @@ android:
 
 before_install:
   - chmod +x gradlew
+
+after_failure: "cat $TRAVIS_BUILD_DIR/library/build/reports/lint-results.xml"
