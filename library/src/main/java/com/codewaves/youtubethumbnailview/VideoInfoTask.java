@@ -3,6 +3,7 @@ package com.codewaves.youtubethumbnailview;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import com.codewaves.youtubethumbnailview.downloader.VideoInfoDownloader;
 import com.codewaves.youtubethumbnailview.listener.VideoInfoDownloadListener;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class VideoInfoTask implements Runnable {
    private VideoInfoDownloadListener listener;
    private Handler handler;
 
-   public VideoInfoTask(@NonNull String url, @NonNull VideoInfoDownloader downloader, @NonNull VideoInfoDownloadListener listener, @NonNull Handler handler) {
+   VideoInfoTask(@NonNull String url, @NonNull VideoInfoDownloader downloader, @NonNull VideoInfoDownloadListener listener, @NonNull Handler handler) {
       this.url = url;
       this.downloader = downloader;
       this.listener = listener;
@@ -39,7 +40,7 @@ public class VideoInfoTask implements Runnable {
       catch (IOException e) {
          postFailure(e);
       }
-      catch (Throwable e) {
+      catch (Exception e) {
          postFailure(e);
       }
    }

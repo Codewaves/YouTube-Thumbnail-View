@@ -3,6 +3,8 @@ package com.codewaves.youtubethumbnailview;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import com.codewaves.youtubethumbnailview.downloader.OembedVideoInfoDownloader;
+import com.codewaves.youtubethumbnailview.downloader.VideoInfoDownloader;
 import com.codewaves.youtubethumbnailview.listener.VideoInfoDownloadListener;
 
 import java.util.concurrent.BlockingQueue;
@@ -16,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * Copyright (c) 2017 Sergej Kravcenko
  */
 
-public class ThumbnailLoader {
+class ThumbnailLoader {
    private static final int DEFAULT_THREAD_POOL_SIZE = 3;
 
    private Executor executor;
@@ -24,7 +26,7 @@ public class ThumbnailLoader {
 
    private volatile static ThumbnailLoader instance;
 
-   public static ThumbnailLoader getInstance() {
+   private static ThumbnailLoader getInstance() {
       if (instance == null) {
          synchronized (ThumbnailLoader.class) {
             if (instance == null) {
@@ -39,14 +41,14 @@ public class ThumbnailLoader {
       final BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
       executor = new ThreadPoolExecutor(DEFAULT_THREAD_POOL_SIZE, DEFAULT_THREAD_POOL_SIZE, 0L, TimeUnit.MILLISECONDS, taskQueue);
 
-      infoDownloader = new ApiVideoInfoDownloader();
+      infoDownloader = new OembedVideoInfoDownloader();
    }
 
    private void fetchVideoInfo(@NonNull String url, @NonNull VideoInfoDownloadListener listener, @NonNull Handler handler) {
       executor.execute(new VideoInfoTask(url, infoDownloader, listener, handler));
    }
 
-   public static void fetchVideoInfo(@NonNull String url, @NonNull VideoInfoDownloadListener listener) {
+   static void fetchVideoInfo(@NonNull String url, @NonNull VideoInfoDownloadListener listener) {
       final Handler handler = new Handler();
       getInstance().fetchVideoInfo(url, listener, handler);
    }

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
    android:layout_width="match_parent"
-   android:layout_height="match_parent">
+   android:layout_height="match_parent"
+   xmlns:app="http://schemas.android.com/apk/res-auto">
 
    <com.codewaves.youtubethumbnailview.ThumbnailView android:id="@+id/thumbnail"
       android:layout_width="200dp"
       android:layout_height="150dp"
       android:layout_margin="10dp"
-      android:background="@android:color/black"/>
+      android:background="@android:color/black"
+      app:youtube_titleColor="@color/colorAccent"
+      app:youtube_titleMaxLines="2"
+      app:youtube_titleTextSize="15sp"/>
 
 </LinearLayout>

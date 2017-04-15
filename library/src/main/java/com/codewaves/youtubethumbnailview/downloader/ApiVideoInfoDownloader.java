@@ -1,6 +1,8 @@
-package com.codewaves.youtubethumbnailview;
+package com.codewaves.youtubethumbnailview.downloader;
 
 import android.support.annotation.NonNull;
+
+import com.codewaves.youtubethumbnailview.VideoInfo;
 
 import java.io.IOException;
 import java.util.regex.Matcher;

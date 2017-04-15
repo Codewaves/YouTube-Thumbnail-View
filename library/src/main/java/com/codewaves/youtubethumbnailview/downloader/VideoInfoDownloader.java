@@ -1,6 +1,8 @@
-package com.codewaves.youtubethumbnailview;
+package com.codewaves.youtubethumbnailview.downloader;
 
 import android.support.annotation.NonNull;
+
+import com.codewaves.youtubethumbnailview.VideoInfo;
 
 import java.io.IOException;
 
@@ -10,5 +12,6 @@ import java.io.IOException;
  */
 
 public interface VideoInfoDownloader {
-   @NonNull VideoInfo download(@NonNull String url) throws IOException;
+   @NonNull
+   VideoInfo download(@NonNull String url) throws IOException;
 }

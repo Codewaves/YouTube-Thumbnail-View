@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <declare-styleable name="ThumbnailView">
+      <attr name="youtube_titleColor" format="color" />
+      <attr name="youtube_titleTextSize" format="dimension" />
+      <attr name="youtube_titleMarginLeft" format="dimension" />
+      <attr name="youtube_titleMarginRight" format="dimension" />
+      <attr name="youtube_titleMarginTop" format="dimension" />
+      <attr name="youtube_titleMarginBottom" format="dimension" />
+      <attr name="youtube_titleMaxLines" format="integer" />
+   </declare-styleable>
+</resources>
