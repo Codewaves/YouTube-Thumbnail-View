@@ -3,7 +3,6 @@ package com.codewaves.youtubethumbnailview;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.codewaves.youtubethumbnailview.listener.ImageDownloadListener;
 import com.codewaves.youtubethumbnailview.listener.SimpleThumbnailLoadingListener;
 import com.codewaves.youtubethumbnailview.listener.ThumbnailLoadingListener;
 import com.codewaves.youtubethumbnailview.listener.VideoInfoDownloadListener;
