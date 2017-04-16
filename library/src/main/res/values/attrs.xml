@@ -3,6 +3,9 @@
    <declare-styleable name="ThumbnailView">
       <attr name="youtube_minThumbnailWidth" format="integer" />
 
+      <attr name="youtube_titleVisible" format="boolean" />
+      <attr name="youtube_timeVisible" format="boolean" />
+
       <attr name="youtube_titleColor" format="color" />
       <attr name="youtube_titleBackgroundColor" format="color" />
       <attr name="youtube_titleTextSize" format="dimension" />

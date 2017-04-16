@@ -62,6 +62,9 @@ public class ThumbnailView extends RelativeLayout {
       final TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.ThumbnailView, 0, 0);
 
       this.minThumbnailSize = attr.getInteger(R.styleable.ThumbnailView_youtube_minThumbnailWidth, DEFAULT_MIN_THUMBNAIL_SIZE);
+
+      final boolean titleVisible = attr.getBoolean(R.styleable.ThumbnailView_youtube_titleVisible, true);
+
       final int titleColor = attr.getColor(R.styleable.ThumbnailView_youtube_titleColor, Color.WHITE);
       final int titleBackgroundColor = attr.getColor(R.styleable.ThumbnailView_youtube_titleBackgroundColor, 0x80000000);
       final int titlePaddingLeft = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_titlePaddingLeft, dpToPx(context, 10.0f));
@@ -90,6 +93,7 @@ public class ThumbnailView extends RelativeLayout {
       title.setEllipsize(TextUtils.TruncateAt.END);
       title.setPadding(titlePaddingLeft, titlePaddingTop, titlePaddingRight, titlePaddingBottom);
       title.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+      title.setVisibility(titleVisible ? VISIBLE : GONE);
 
       addView(title);
    }
