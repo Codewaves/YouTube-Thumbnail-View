@@ -75,7 +75,7 @@ public class ApiVideoInfoDownloader implements VideoInfoDownloader {
       int thumbnailWidth = Integer.MAX_VALUE;
       try {
          final JsonObject thumbnails = snippet.get("thumbnails").getAsJsonObject();
-         for (Map.Entry<String, JsonElement> entry : thumbnails.entrySet()) {
+         for (final Map.Entry<String, JsonElement> entry : thumbnails.entrySet()) {
             final JsonObject thumbnail = entry.getValue().getAsJsonObject();
             final int width = thumbnail.get("width").getAsInt();
 

@@ -12,12 +12,14 @@ android {
         versionCode versions.publishVersionCode
         versionName versions.publishVersion
     }
-
     buildTypes {
         release {
             minifyEnabled false
             shrinkResources false
         }
+    }
+    lintOptions {
+        lintConfig file("../lint.xml")
     }
 }
 

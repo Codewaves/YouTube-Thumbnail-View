@@ -62,7 +62,7 @@ public class ThumbnailLoader {
 
    private ThumbnailLoader(@NonNull Context context) {
       try {
-         ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+         final ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
          if (appInfo.metaData != null) {
             googleApiKey = appInfo.metaData.getString("com.codewaves.youtubethumbnailview.ApiKey");
          }
@@ -113,7 +113,7 @@ public class ThumbnailLoader {
 
    static void fetchVideoInfo(@NonNull String url, int minThumbnailWidth, @NonNull VideoInfoDownloadListener listener) {
       if (instance == null) {
-         throw new RuntimeException("Youtube thumbnail library is not initialized");
+         throw new IllegalStateException("Youtube thumbnail library is not initialized");
       }
 
       final Handler handler = new Handler();
@@ -126,7 +126,7 @@ public class ThumbnailLoader {
 
    static void fetchThumbnail(@NonNull String url, @NonNull ImageView imageView) {
       if (instance == null) {
-         throw new RuntimeException("Youtube thumbnail library is not initialized");
+         throw new IllegalStateException("Youtube thumbnail library is not initialized");
       }
 
       instance.fetchThumbnailInternal(url, imageView);

@@ -22,7 +22,7 @@ public class Utils {
 
       int current = 0;
       int seconds = 0;
-      for (char c : duration.toCharArray()) {
+      for (final char c : duration.toCharArray()) {
          if (Character.isDigit(c)) {
             current = current * 10 + Character.getNumericValue(c);
          }
