@@ -14,5 +14,16 @@
       <attr name="youtube_titlePaddingTop" format="dimension" />
       <attr name="youtube_titlePaddingBottom" format="dimension" />
       <attr name="youtube_titleMaxLines" format="integer" />
+
+      <attr name="youtube_timeColor" format="color" />
+      <attr name="youtube_timeBackgroundColor" format="color" />
+      <attr name="youtube_timeTextSize" format="dimension" />
+      <attr name="youtube_timePaddingLeft" format="dimension" />
+      <attr name="youtube_timePaddingRight" format="dimension" />
+      <attr name="youtube_timePaddingTop" format="dimension" />
+      <attr name="youtube_timePaddingBottom" format="dimension" />
+      <attr name="youtube_timeMarginBottom" format="dimension" />
+      <attr name="youtube_timeMarginRight" format="dimension" />
+
    </declare-styleable>
 </resources>

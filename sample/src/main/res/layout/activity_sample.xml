@@ -5,10 +5,11 @@
    xmlns:app="http://schemas.android.com/apk/res-auto">
 
    <com.codewaves.youtubethumbnailview.ThumbnailView android:id="@+id/thumbnail"
-      android:layout_width="220dp"
-      android:layout_height="150dp"
+      android:layout_width="320dp"
+      android:layout_height="180dp"
       android:layout_margin="10dp"
       android:background="@android:color/black"
+      app:youtube_minThumbnailWidth="320"
       app:youtube_titleMaxLines="1"
       app:youtube_titleTextSize="14sp"/>
 

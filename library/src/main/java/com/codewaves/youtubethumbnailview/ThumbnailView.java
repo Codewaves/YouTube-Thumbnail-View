@@ -30,8 +30,11 @@ public class ThumbnailView extends RelativeLayout {
 
    private ImageView thumbnail;
    private TextView title;
+   private TextView time;
 
    private int minThumbnailSize;
+   private boolean titleVisible;
+   private boolean timeVisible;
 
    private int dpToPx(Context context, float dp) {
       final float scale = context.getResources().getDisplayMetrics().density;
@@ -61,9 +64,10 @@ public class ThumbnailView extends RelativeLayout {
       // Attributes
       final TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.ThumbnailView, 0, 0);
 
-      this.minThumbnailSize = attr.getInteger(R.styleable.ThumbnailView_youtube_minThumbnailWidth, DEFAULT_MIN_THUMBNAIL_SIZE);
+      minThumbnailSize = attr.getInteger(R.styleable.ThumbnailView_youtube_minThumbnailWidth, DEFAULT_MIN_THUMBNAIL_SIZE);
 
-      final boolean titleVisible = attr.getBoolean(R.styleable.ThumbnailView_youtube_titleVisible, true);
+      titleVisible = attr.getBoolean(R.styleable.ThumbnailView_youtube_titleVisible, true);
+      timeVisible = attr.getBoolean(R.styleable.ThumbnailView_youtube_timeVisible, true);
 
       final int titleColor = attr.getColor(R.styleable.ThumbnailView_youtube_titleColor, Color.WHITE);
       final int titleBackgroundColor = attr.getColor(R.styleable.ThumbnailView_youtube_titleBackgroundColor, 0x80000000);
@@ -74,13 +78,23 @@ public class ThumbnailView extends RelativeLayout {
       final float titleTextSize = attr.getDimension(R.styleable.ThumbnailView_youtube_titleTextSize, getResources().getDimension(R.dimen.title_text_size));
       final int titleMaxLines = attr.getInteger(R.styleable.ThumbnailView_youtube_titleMaxLines, DEFAULT_TITLE_MAX_LINES);
 
+      final int timeColor = attr.getColor(R.styleable.ThumbnailView_youtube_timeColor, Color.WHITE);
+      final int timeBackgroundColor = attr.getColor(R.styleable.ThumbnailView_youtube_timeBackgroundColor, Color.BLACK);
+      final int timePaddingLeft = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_timePaddingLeft, dpToPx(context, 5.0f));
+      final int timePaddingRight = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_timePaddingRight, dpToPx(context, 5.0f));
+      final int timePaddingTop = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_timePaddingTop, dpToPx(context, 0.0f));
+      final int timePaddingBottom = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_timePaddingBottom, dpToPx(context, 0.0f));
+      final int timeMarginBottom = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_timeMarginBottom, dpToPx(context, 10.0f));
+      final int timeMarginRight = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_timeMarginRight, dpToPx(context, 10.0f));
+      final float timeTextSize = attr.getDimension(R.styleable.ThumbnailView_youtube_timeTextSize, getResources().getDimension(R.dimen.time_text_size));
+
       attr.recycle();
 
 
       // Add thumbnail image
       thumbnail = new ImageView(context);
       thumbnail.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-      thumbnail.setScaleType(ImageView.ScaleType.FIT_CENTER);
+      thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
       addView(thumbnail);
 
@@ -96,6 +110,23 @@ public class ThumbnailView extends RelativeLayout {
       title.setVisibility(titleVisible ? VISIBLE : GONE);
 
       addView(title);
+
+      // Add video length
+      time = new TextView(context);
+      time.setTextColor(timeColor);
+      time.setBackgroundColor(timeBackgroundColor);
+      time.setTextSize(TypedValue.COMPLEX_UNIT_PX, timeTextSize);
+      time.setMaxLines(1);
+      time.setPadding(timePaddingLeft, timePaddingTop, timePaddingRight, timePaddingBottom);
+
+      LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+      lp.setMargins(0, 0, timeMarginRight, timeMarginBottom);
+      lp.addRule(ALIGN_PARENT_BOTTOM);
+      lp.addRule(ALIGN_PARENT_RIGHT);
+      time.setLayoutParams(lp);
+      time.setVisibility(timeVisible ? VISIBLE : GONE);
+
+      addView(time);
    }
 
    public void displayThumbnail(@NonNull String url) {
@@ -114,7 +145,10 @@ public class ThumbnailView extends RelativeLayout {
          public void onDownloadFinished(@NonNull VideoInfo info) {
             // Update views and start thumbnail download
             title.setText(info.getTitle());
+            time.setText(Utils.secondsToTime(info.getLength()));
+
             loadThumbnailImage(info.getThumbnailUrl(), imageLoader);
+
             listener.onLoadingComplete(url, ThumbnailView.this);
          }
 
