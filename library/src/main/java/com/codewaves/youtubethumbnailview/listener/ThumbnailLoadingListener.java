@@ -11,5 +11,6 @@ import android.view.View;
 public interface ThumbnailLoadingListener {
    void onLoadingStarted(@NonNull String url, @NonNull View view);
    void onLoadingComplete(@NonNull String url, @NonNull View view);
+   void onLoadingCanceled(@NonNull String url, @NonNull View view);
    void onLoadingFailed(@NonNull String url, @NonNull View view, Throwable error);
 }

@@ -52,6 +52,11 @@ public class SampleActivity extends AppCompatActivity {
                }
 
                @Override
+               public void onLoadingCanceled(@NonNull String url, @NonNull View view) {
+                  Log.i(TAG, "Thumbnail load canceled.");
+               }
+
+               @Override
                public void onLoadingFailed(@NonNull String url, @NonNull View view, Throwable error) {
                   Log.e(TAG, "Thumbnail load failed. " + error.getMessage());
                }
@@ -78,10 +83,20 @@ public class SampleActivity extends AppCompatActivity {
                public void onLoadingFailed(@NonNull String url, @NonNull View view, Throwable error) {
                   Log.e(TAG, "Thumbnail load failed. " + error.getMessage());
                }
+
+               @Override
+               public void onLoadingCanceled(@NonNull String url, @NonNull View view) {
+                  Log.i(TAG, "Thumbnail load canceled.");
+               }
             }, new ImageLoader() {
                @Override
                public void load(String url, ImageView imageView) {
                   Picasso.with(SampleActivity.this).load(url).into(imageView);
+               }
+
+               @Override
+               public void cancel(ImageView imageView) {
+                  Picasso.with(SampleActivity.this).cancelRequest(imageView);
                }
             });
          }

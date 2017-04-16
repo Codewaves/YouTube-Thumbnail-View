@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.codewaves.youtubethumbnailview.listener.SimpleThumbnailLoadingListener;
 import com.codewaves.youtubethumbnailview.listener.ThumbnailLoadingListener;
 import com.codewaves.youtubethumbnailview.listener.VideoInfoDownloadListener;
 
@@ -50,7 +49,7 @@ public class ThumbnailView extends RelativeLayout {
 
    @IntDef({VISIBLE, INVISIBLE, GONE})
    @Retention(RetentionPolicy.SOURCE)
-   public @interface Visibility {}
+   @interface Visibility {}
 
    public ThumbnailView(Context context) {
       this(context, null);
@@ -90,7 +89,7 @@ public class ThumbnailView extends RelativeLayout {
       final int titleMaxLines = attr.getInteger(R.styleable.ThumbnailView_youtube_titleMaxLines, DEFAULT_TITLE_MAX_LINES);
 
       final int timeColor = attr.getColor(R.styleable.ThumbnailView_youtube_timeColor, Color.WHITE);
-      final int timeBackgroundColor = attr.getColor(R.styleable.ThumbnailView_youtube_timeBackgroundColor, Color.BLACK);
+      final int timeBackgroundColor = attr.getColor(R.styleable.ThumbnailView_youtube_timeBackgroundColor, 0x80000000);
       final int timePaddingLeft = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_timePaddingLeft, dpToPx(context, 5.0f));
       final int timePaddingRight = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_timePaddingRight, dpToPx(context, 5.0f));
       final int timePaddingTop = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_timePaddingTop, dpToPx(context, 0.0f));
@@ -156,6 +155,7 @@ public class ThumbnailView extends RelativeLayout {
    }
 
    public void clearThumbnail() {
+      ThumbnailLoader.cancelThumbnailLoad(this);
       titleView.setVisibility(GONE);
       timeView.setVisibility(GONE);
       thumbnailView.setImageDrawable(null);
@@ -176,46 +176,31 @@ public class ThumbnailView extends RelativeLayout {
       }
    }
 
-   public void displayThumbnail(@Nullable String title, int length, Bitmap thumbnail) {
+   public void displayThumbnail(@Nullable String title, int length, @Nullable Bitmap thumbnail) {
+      ThumbnailLoader.cancelThumbnailLoad(this);
       setThumbnailInfo(title, length);
       thumbnailView.setImageBitmap(thumbnail);
    }
 
-   public void displayThumbnail(@Nullable String title, int length, Drawable thumbnail) {
+   public void displayThumbnail(@Nullable String title, int length, @Nullable Drawable thumbnail) {
+      ThumbnailLoader.cancelThumbnailLoad(this);
       setThumbnailInfo(title, length);
       thumbnailView.setImageDrawable(thumbnail);
    }
 
    public void loadThumbnail(@NonNull String url) {
-      loadThumbnail(url, new SimpleThumbnailLoadingListener(), null);
+      loadThumbnail(url, null, null);
    }
 
-   public void  loadThumbnail(@NonNull String url, @NonNull ThumbnailLoadingListener listener) {
+   public void loadThumbnail(@NonNull String url, @NonNull ThumbnailLoadingListener listener) {
       loadThumbnail(url, listener, null);
    }
 
-   public void  loadThumbnail(final @NonNull String url, final @NonNull ThumbnailLoadingListener listener, final @Nullable ImageLoader imageLoader) {
-      listener.onLoadingStarted(url, this);
-
-      ThumbnailLoader.fetchVideoInfo(url, minThumbnailSize, new VideoInfoDownloadListener() {
-         @Override
-         public void onDownloadFinished(@NonNull VideoInfo info) {
-            // Update views and start thumbnailView download
-            setThumbnailInfo(info.getTitle(), info.getLength());
-            loadThumbnailImage(info.getThumbnailUrl(), imageLoader);
-
-            isLoaded = true;
-            listener.onLoadingComplete(url, ThumbnailView.this);
-         }
-
-         @Override
-         public void onDownloadFailed(@NonNull Throwable error) {
-            listener.onLoadingFailed(url, ThumbnailView.this, error);
-         }
-      });
+   public void loadThumbnail(final @NonNull String url, final @Nullable ThumbnailLoadingListener listener, final @Nullable ImageLoader imageLoader) {
+      ThumbnailLoader.loadThumbnail(this, url, minThumbnailSize, listener, imageLoader);
    }
 
-   private void setThumbnailInfo(@Nullable String title, int length) {
+   void setThumbnailInfo(@Nullable String title, int length) {
       titleView.setText(title);
       if (titleVisible) {
          titleView.setVisibility(VISIBLE);
@@ -225,14 +210,7 @@ public class ThumbnailView extends RelativeLayout {
       if (timeVisible && length > 0) {
          timeView.setVisibility(VISIBLE);
       }
-   }
 
-   private void loadThumbnailImage(@NonNull String imageUrl, @Nullable ImageLoader imageLoader) {
-      if (imageLoader != null) {
-         imageLoader.load(imageUrl, thumbnailView);
-      }
-      else {
-         ThumbnailLoader.fetchThumbnail(imageUrl, thumbnailView);
-      }
+      isLoaded = true;
    }
 }

@@ -1,6 +1,7 @@
 package com.codewaves.youtubethumbnailview.downloader;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.codewaves.youtubethumbnailview.Utils;
 import com.codewaves.youtubethumbnailview.VideoInfo;
@@ -23,9 +24,11 @@ import okhttp3.Response;
 
 public class ApiVideoInfoDownloader implements VideoInfoDownloader {
    private String apiKey;
+   private OkHttpClient client;
 
-   public ApiVideoInfoDownloader(@NonNull String apiKey) {
+   public ApiVideoInfoDownloader(@Nullable String apiKey) {
       this.apiKey = apiKey;
+      this.client = new OkHttpClient();
    }
 
    @Override
@@ -37,7 +40,6 @@ public class ApiVideoInfoDownloader implements VideoInfoDownloader {
             "&key=" + apiKey +
             "&id=" + id;
 
-      final OkHttpClient client = new OkHttpClient();
       final Request request = new Request.Builder()
             .url(apiUrl)
             .build();
