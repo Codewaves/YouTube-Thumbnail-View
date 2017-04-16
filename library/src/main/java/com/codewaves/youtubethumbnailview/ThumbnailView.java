@@ -186,15 +186,15 @@ public class ThumbnailView extends RelativeLayout {
       thumbnailView.setImageDrawable(thumbnail);
    }
 
-   public void fetchThumbnail(@NonNull String url) {
-      fetchThumbnail(url, new SimpleThumbnailLoadingListener(), null);
+   public void loadThumbnail(@NonNull String url) {
+      loadThumbnail(url, new SimpleThumbnailLoadingListener(), null);
    }
 
-   public void fetchThumbnail(@NonNull String url, @NonNull ThumbnailLoadingListener listener) {
-      fetchThumbnail(url, listener, null);
+   public void  loadThumbnail(@NonNull String url, @NonNull ThumbnailLoadingListener listener) {
+      loadThumbnail(url, listener, null);
    }
 
-   public void fetchThumbnail(final @NonNull String url, final @NonNull ThumbnailLoadingListener listener, final @Nullable ImageLoader imageLoader) {
+   public void  loadThumbnail(final @NonNull String url, final @NonNull ThumbnailLoadingListener listener, final @Nullable ImageLoader imageLoader) {
       listener.onLoadingStarted(url, this);
 
       ThumbnailLoader.fetchVideoInfo(url, minThumbnailSize, new VideoInfoDownloadListener() {

@@ -40,7 +40,7 @@ public class SampleActivity extends AppCompatActivity {
       fetch.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            thumb.fetchThumbnail("https://www.youtube.com/watch?v=iCkYw3cRwLo", new ThumbnailLoadingListener() {
+            thumb.loadThumbnail("https://www.youtube.com/watch?v=iCkYw3cRwLo", new ThumbnailLoadingListener() {
                @Override
                public void onLoadingStarted(@NonNull String url, @NonNull View view) {
                   Log.i(TAG, "Thumbnail load started.");
@@ -63,7 +63,7 @@ public class SampleActivity extends AppCompatActivity {
       picasso.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            thumb.fetchThumbnail("https://www.youtube.com/watch?v=H7jtC8vjXw8", new ThumbnailLoadingListener() {
+            thumb.loadThumbnail("https://www.youtube.com/watch?v=H7jtC8vjXw8", new ThumbnailLoadingListener() {
                @Override
                public void onLoadingStarted(@NonNull String url, @NonNull View view) {
                   Log.i(TAG, "Thumbnail load started.");
