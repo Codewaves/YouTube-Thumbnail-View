@@ -25,13 +25,13 @@ import com.codewaves.youtubethumbnailview.listener.VideoInfoDownloadListener;
  */
 
 public class ThumbnailView extends RelativeLayout {
-   private static final int DEFAULT_TITLE_MAX_LINES = 2;
+   private static final int DEFAULT_TITLE_MAX_LINES = 1;
    private static final int DEFAULT_MIN_THUMBNAIL_SIZE = 320;
 
    private ImageView thumbnail;
    private TextView title;
 
-   private int minThumbnailSize = DEFAULT_MIN_THUMBNAIL_SIZE;
+   private int minThumbnailSize;
 
    private int dpToPx(Context context, float dp) {
       final float scale = context.getResources().getDisplayMetrics().density;
@@ -60,13 +60,17 @@ public class ThumbnailView extends RelativeLayout {
    private void init(Context context, AttributeSet attrs) {
       // Attributes
       final TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.ThumbnailView, 0, 0);
+
+      this.minThumbnailSize = attr.getInteger(R.styleable.ThumbnailView_youtube_minThumbnailWidth, DEFAULT_MIN_THUMBNAIL_SIZE);
       final int titleColor = attr.getColor(R.styleable.ThumbnailView_youtube_titleColor, Color.WHITE);
-      final int titleMarginLeft = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_titleMarginLeft, dpToPx(context, 10.0f));
-      final int titleMarginRight = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_titleMarginRight, dpToPx(context, 10.0f));
-      final int titleMarginTop = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_titleMarginTop, dpToPx(context, 5.0f));
-      final int titleMarginBottom = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_titleMarginBottom, dpToPx(context, 5.0f));
+      final int titleBackgroundColor = attr.getColor(R.styleable.ThumbnailView_youtube_titleBackgroundColor, 0x80000000);
+      final int titlePaddingLeft = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_titlePaddingLeft, dpToPx(context, 10.0f));
+      final int titlePaddingRight = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_titlePaddingRight, dpToPx(context, 10.0f));
+      final int titlePaddingTop = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_titlePaddingTop, dpToPx(context, 5.0f));
+      final int titlePaddingBottom = attr.getDimensionPixelSize(R.styleable.ThumbnailView_youtube_titlePaddingBottom, dpToPx(context, 5.0f));
       final float titleTextSize = attr.getDimension(R.styleable.ThumbnailView_youtube_titleTextSize, getResources().getDimension(R.dimen.title_text_size));
       final int titleMaxLines = attr.getInteger(R.styleable.ThumbnailView_youtube_titleMaxLines, DEFAULT_TITLE_MAX_LINES);
+
       attr.recycle();
 
 
@@ -80,13 +84,12 @@ public class ThumbnailView extends RelativeLayout {
       // Add video title
       title = new TextView(context);
       title.setTextColor(titleColor);
+      title.setBackgroundColor(titleBackgroundColor);
       title.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
       title.setMaxLines(titleMaxLines);
       title.setEllipsize(TextUtils.TruncateAt.END);
-
-      final LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-      lp.setMargins(titleMarginLeft, titleMarginTop, titleMarginRight, titleMarginBottom);
-      title.setLayoutParams(lp);
+      title.setPadding(titlePaddingLeft, titlePaddingTop, titlePaddingRight, titlePaddingBottom);
+      title.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
       addView(title);
    }
