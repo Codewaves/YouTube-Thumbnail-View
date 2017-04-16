@@ -3,7 +3,9 @@ package com.codewaves.youtubethumbnailview;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -11,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -33,9 +34,9 @@ public class ThumbnailView extends RelativeLayout {
    private static final int DEFAULT_TITLE_MAX_LINES = 1;
    private static final int DEFAULT_MIN_THUMBNAIL_SIZE = 320;
 
-   private ImageView thumbnail;
-   private TextView title;
-   private TextView time;
+   private ImageView thumbnailView;
+   private TextView titleView;
+   private TextView timeView;
 
    private boolean isLoaded;
    private int minThumbnailSize;
@@ -101,105 +102,106 @@ public class ThumbnailView extends RelativeLayout {
       attr.recycle();
 
 
-      // Add thumbnail image
-      thumbnail = new ImageView(context);
-      thumbnail.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-      thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
+      // Add thumbnailView image
+      thumbnailView = new ImageView(context);
+      thumbnailView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+      thumbnailView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-      addView(thumbnail);
+      addView(thumbnailView);
 
-      // Add video title
-      title = new TextView(context);
-      title.setTextColor(titleColor);
-      title.setBackgroundColor(titleBackgroundColor);
-      title.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
-      title.setMaxLines(titleMaxLines);
-      title.setEllipsize(TextUtils.TruncateAt.END);
-      title.setPadding(titlePaddingLeft, titlePaddingTop, titlePaddingRight, titlePaddingBottom);
-      title.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-      title.setVisibility(GONE);
+      // Add video titleView
+      titleView = new TextView(context);
+      titleView.setTextColor(titleColor);
+      titleView.setBackgroundColor(titleBackgroundColor);
+      titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
+      titleView.setMaxLines(titleMaxLines);
+      titleView.setEllipsize(TextUtils.TruncateAt.END);
+      titleView.setPadding(titlePaddingLeft, titlePaddingTop, titlePaddingRight, titlePaddingBottom);
+      titleView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+      titleView.setVisibility(GONE);
 
-      addView(title);
+      addView(titleView);
 
       // Add video length
-      time = new TextView(context);
-      time.setTextColor(timeColor);
-      time.setBackgroundColor(timeBackgroundColor);
-      time.setTextSize(TypedValue.COMPLEX_UNIT_PX, timeTextSize);
-      time.setMaxLines(1);
-      time.setPadding(timePaddingLeft, timePaddingTop, timePaddingRight, timePaddingBottom);
+      timeView = new TextView(context);
+      timeView.setTextColor(timeColor);
+      timeView.setBackgroundColor(timeBackgroundColor);
+      timeView.setTextSize(TypedValue.COMPLEX_UNIT_PX, timeTextSize);
+      timeView.setMaxLines(1);
+      timeView.setPadding(timePaddingLeft, timePaddingTop, timePaddingRight, timePaddingBottom);
 
       final LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
       lp.setMargins(0, 0, timeMarginRight, timeMarginBottom);
       lp.addRule(ALIGN_PARENT_BOTTOM);
       lp.addRule(ALIGN_PARENT_RIGHT);
-      time.setLayoutParams(lp);
-      time.setVisibility(GONE);
+      timeView.setLayoutParams(lp);
+      timeView.setVisibility(GONE);
 
-      addView(time);
+      addView(timeView);
    }
 
    @NonNull
    public TextView getTitleView() {
-      return title;
+      return titleView;
    }
 
    @NonNull
    public TextView getTimeView() {
-      return time;
+      return timeView;
    }
 
    @NonNull
    public ImageView getThumbnailView() {
-      return thumbnail;
+      return thumbnailView;
    }
 
    public void clearThumbnail() {
-      title.setVisibility(GONE);
-      time.setVisibility(GONE);
-      thumbnail.setImageDrawable(null);
+      titleView.setVisibility(GONE);
+      timeView.setVisibility(GONE);
+      thumbnailView.setImageDrawable(null);
       isLoaded = false;
    }
 
    public void setTitleVisibility(@Visibility int visibility) {
       titleVisible = visibility == VISIBLE;
       if (isLoaded) {
-         title.setVisibility(visibility);
+         titleView.setVisibility(visibility);
       }
    }
 
    public void setTimeVisibility(@Visibility int visibility) {
       timeVisible = visibility == VISIBLE;
       if (isLoaded) {
-         time.setVisibility(visibility);
+         timeView.setVisibility(visibility);
       }
    }
 
-   public void displayThumbnail(@NonNull String url) {
-      displayThumbnail(url, new SimpleThumbnailLoadingListener(), null);
+   public void displayThumbnail(@Nullable String title, int length, Bitmap thumbnail) {
+      setThumbnailInfo(title, length);
+      thumbnailView.setImageBitmap(thumbnail);
    }
 
-   public void displayThumbnail(@NonNull String url, @NonNull ThumbnailLoadingListener listener) {
-      displayThumbnail(url, listener, null);
+   public void displayThumbnail(@Nullable String title, int length, Drawable thumbnail) {
+      setThumbnailInfo(title, length);
+      thumbnailView.setImageDrawable(thumbnail);
    }
 
-   public void displayThumbnail(final @NonNull String url, final @NonNull ThumbnailLoadingListener listener, final @Nullable ImageLoader imageLoader) {
+   public void fetchThumbnail(@NonNull String url) {
+      fetchThumbnail(url, new SimpleThumbnailLoadingListener(), null);
+   }
+
+   public void fetchThumbnail(@NonNull String url, @NonNull ThumbnailLoadingListener listener) {
+      fetchThumbnail(url, listener, null);
+   }
+
+   public void fetchThumbnail(final @NonNull String url, final @NonNull ThumbnailLoadingListener listener, final @Nullable ImageLoader imageLoader) {
       listener.onLoadingStarted(url, this);
 
       ThumbnailLoader.fetchVideoInfo(url, minThumbnailSize, new VideoInfoDownloadListener() {
          @Override
          public void onDownloadFinished(@NonNull VideoInfo info) {
-            // Update views and start thumbnail download
-            title.setText(info.getTitle());
-            if (titleVisible) {
-               title.setVisibility(VISIBLE);
-            }
-
-            time.setText(Utils.secondsToTime(info.getLength()));
-            if (timeVisible && info.getLength() > 0) {
-               time.setVisibility(VISIBLE);
-            }
-
+            // Update views and start thumbnailView download
+            setThumbnailInfo(info.getTitle(), info.getLength());
             loadThumbnailImage(info.getThumbnailUrl(), imageLoader);
 
             isLoaded = true;
@@ -213,12 +215,24 @@ public class ThumbnailView extends RelativeLayout {
       });
    }
 
+   private void setThumbnailInfo(@Nullable String title, int length) {
+      titleView.setText(title);
+      if (titleVisible) {
+         titleView.setVisibility(VISIBLE);
+      }
+
+      timeView.setText(Utils.secondsToTime(length));
+      if (timeVisible && length > 0) {
+         timeView.setVisibility(VISIBLE);
+      }
+   }
+
    private void loadThumbnailImage(@NonNull String imageUrl, @Nullable ImageLoader imageLoader) {
       if (imageLoader != null) {
-         imageLoader.load(imageUrl, thumbnail);
+         imageLoader.load(imageUrl, thumbnailView);
       }
       else {
-         ThumbnailLoader.fetchThumbnail(imageUrl, thumbnail);
+         ThumbnailLoader.fetchThumbnail(imageUrl, thumbnailView);
       }
    }
 }
