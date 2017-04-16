@@ -1,3 +1,7 @@
 <resources>
    <string name="app_name">YouTubeThumbnailView</string>
+   <string name="button_fetch">Fetch</string>
+   <string name="button_clear">Clear</string>
+   <string name="button_display">Display</string>
+   <string name="button_picasso">Picasso</string>
 </resources>
