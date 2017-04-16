@@ -2,11 +2,19 @@ package com.codewaves.youtubethumbnailview.downloader;
 
 import android.support.annotation.NonNull;
 
+import com.codewaves.youtubethumbnailview.Utils;
 import com.codewaves.youtubethumbnailview.VideoInfo;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by Sergej Kravcenko on 4/15/2017.
@@ -14,23 +22,76 @@ import java.util.regex.Pattern;
  */
 
 public class ApiVideoInfoDownloader implements VideoInfoDownloader {
-   private static final String REGEXP_ID_PATTERN = "^(?:(?:https?:\\/\\/)?(?:www\\.)?)?(youtube(?:-nocookie)?\\.com|youtu\\.be)\\/.*?(?:embed|e|v|watch\\?.*?v=)?\\/?([a-z0-9]+)";
+   private String apiKey;
+
+   public ApiVideoInfoDownloader(@NonNull String apiKey) {
+      this.apiKey = apiKey;
+   }
 
    @Override
    @NonNull
-   public VideoInfo download(@NonNull String url) throws IOException {
-      final String id = getVideoIdFromUrl(url);
+   public VideoInfo download(@NonNull String url, int minThumbnailWidth) throws IOException {
+      final String id = Utils.getVideoIdFromUrl(url);
+      final String apiUrl = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet" +
+            "&fields=items(snippet(title,thumbnails)),items(contentDetails(duration))" +
+            "&key=" + apiKey +
+            "&id=" + id;
 
-      return new VideoInfo("", "", 0);
+      final OkHttpClient client = new OkHttpClient();
+      final Request request = new Request.Builder()
+            .url(apiUrl)
+            .build();
+
+      final Response response = client.newCall(request).execute();
+      try {
+         if (!response.isSuccessful()) {
+            throw new IOException("Unexpected code " + response);
+         }
+
+         final JsonElement root = new JsonParser().parse(response.body().charStream());
+         final JsonArray items = root.getAsJsonObject().get("items").getAsJsonArray();
+         if (items.size() <= 0) {
+            throw new IOException("Cannot find video");
+         }
+
+         final JsonObject snippet = items.get(0).getAsJsonObject().get("snippet").getAsJsonObject();
+         final String title = snippet.get("title").getAsString();
+         final String thumbnail = findThumbnailUrl(snippet, minThumbnailWidth);
+
+         final JsonObject contentDetails = items.get(0).getAsJsonObject().get("contentDetails").getAsJsonObject();
+         final String duration = contentDetails.get("duration").getAsString();
+         final int seconds = Utils.durationToSeconds(duration);
+
+         return new VideoInfo(title, thumbnail, seconds);
+
+      }
+      finally {
+         response.close();
+      }
    }
 
-   private String getVideoIdFromUrl(String url) {
-      final Pattern pattern = Pattern.compile(REGEXP_ID_PATTERN);
-      final Matcher matcher = pattern.matcher(url);
-      if (matcher.matches()) {
-         return matcher.group(2);
+   private String findThumbnailUrl(@NonNull JsonObject snippet, int minWidth) {
+      String thumbnailUrl = null;
+      int thumbnailWidth = Integer.MAX_VALUE;
+      try {
+         final JsonObject thumbnails = snippet.get("thumbnails").getAsJsonObject();
+         for (Map.Entry<String, JsonElement> entry : thumbnails.entrySet()) {
+            final JsonObject thumbnail = entry.getValue().getAsJsonObject();
+            final int width = thumbnail.get("width").getAsInt();
+
+            if (thumbnailUrl == null ||
+                  (width >= minWidth && thumbnailWidth < minWidth) ||
+                  (width >= minWidth && width < thumbnailWidth) ||
+                  (width < minWidth && width > thumbnailWidth)) {
+               thumbnailUrl = thumbnail.get("url").getAsString();
+               thumbnailWidth = width;
+            }
+         }
+      }
+      catch (Exception e) {
+         // Ignore, we can't find any thumbnail
       }
 
-      throw new IllegalArgumentException("Cannot extract video id from url");
+      return thumbnailUrl;
    }
 }

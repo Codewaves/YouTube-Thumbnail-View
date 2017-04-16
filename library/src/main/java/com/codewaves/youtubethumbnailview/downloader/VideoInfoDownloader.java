@@ -13,5 +13,5 @@ import java.io.IOException;
 
 public interface VideoInfoDownloader {
    @NonNull
-   VideoInfo download(@NonNull String url) throws IOException;
+   VideoInfo download(@NonNull String url, int minThumbnailWidth) throws IOException;
 }

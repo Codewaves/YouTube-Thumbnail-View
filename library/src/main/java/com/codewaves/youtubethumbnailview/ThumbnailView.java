@@ -26,11 +26,12 @@ import com.codewaves.youtubethumbnailview.listener.VideoInfoDownloadListener;
 
 public class ThumbnailView extends RelativeLayout {
    private static final int DEFAULT_TITLE_MAX_LINES = 2;
+   private static final int DEFAULT_MIN_THUMBNAIL_SIZE = 320;
 
    private ImageView thumbnail;
    private TextView title;
 
-   private ImageLoader imageLoader;
+   private int minThumbnailSize = DEFAULT_MIN_THUMBNAIL_SIZE;
 
    private int dpToPx(Context context, float dp) {
       final float scale = context.getResources().getDisplayMetrics().density;
@@ -101,12 +102,12 @@ public class ThumbnailView extends RelativeLayout {
    public void displayThumbnail(final @NonNull String url, final @NonNull ThumbnailLoadingListener listener, final @Nullable ImageLoader imageLoader) {
       listener.onLoadingStarted(url, this);
 
-      ThumbnailLoader.fetchVideoInfo(url, new VideoInfoDownloadListener() {
+      ThumbnailLoader.fetchVideoInfo(url, minThumbnailSize, new VideoInfoDownloadListener() {
          @Override
          public void onDownloadFinished(@NonNull VideoInfo info) {
             // Update views and start thumbnail download
             title.setText(info.getTitle());
-            loadThumbnailImage(info.getThumbnailUrl());
+            loadThumbnailImage(info.getThumbnailUrl(), imageLoader);
             listener.onLoadingComplete(url, ThumbnailView.this);
          }
 
@@ -117,7 +118,7 @@ public class ThumbnailView extends RelativeLayout {
       });
    }
 
-   private void loadThumbnailImage(@NonNull String imageUrl) {
+   private void loadThumbnailImage(@NonNull String imageUrl, @Nullable ImageLoader imageLoader) {
       if (imageLoader != null) {
          imageLoader.load(imageUrl, thumbnail);
       }

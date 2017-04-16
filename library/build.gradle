@@ -40,6 +40,9 @@ android {
             minifyEnabled false
         }
     }
+    lintOptions {
+        lintConfig file("lint.xml")
+    }
 }
 
 dependencies {

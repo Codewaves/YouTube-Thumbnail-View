@@ -15,12 +15,14 @@ import java.io.IOException;
 
 class VideoInfoTask implements Runnable {
    private final String url;
+   private final int minThumbnailWidth;
    private final VideoInfoDownloader downloader;
    private final VideoInfoDownloadListener listener;
    private final Handler handler;
 
-   VideoInfoTask(@NonNull String url, @NonNull VideoInfoDownloader downloader, @NonNull VideoInfoDownloadListener listener, @NonNull Handler handler) {
+   VideoInfoTask(@NonNull String url, int minThumbnailWidth, @NonNull VideoInfoDownloader downloader, @NonNull VideoInfoDownloadListener listener, @NonNull Handler handler) {
       this.url = url;
+      this.minThumbnailWidth = minThumbnailWidth;
       this.downloader = downloader;
       this.listener = listener;
       this.handler = handler;
@@ -29,7 +31,7 @@ class VideoInfoTask implements Runnable {
    @Override
    public void run() {
       try {
-         final VideoInfo info = downloader.download(url);
+         final VideoInfo info = downloader.download(url, minThumbnailWidth);
          postTask(new Runnable() {
             @Override
             public void run() {

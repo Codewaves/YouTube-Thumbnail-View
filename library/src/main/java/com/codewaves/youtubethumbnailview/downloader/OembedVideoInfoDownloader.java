@@ -20,7 +20,7 @@ import okhttp3.Response;
 public class OembedVideoInfoDownloader implements VideoInfoDownloader {
    @Override
    @NonNull
-   public VideoInfo download(@NonNull String url) throws IOException {
+   public VideoInfo download(@NonNull String url, int minThumbnailWidth) throws IOException {
       final String encodedUrl = URLEncoder.encode(url, "UTF-8");
       final String ombedUrl = "http://www.youtube.com/oembed?url=" + encodedUrl + "&format=json";
 
