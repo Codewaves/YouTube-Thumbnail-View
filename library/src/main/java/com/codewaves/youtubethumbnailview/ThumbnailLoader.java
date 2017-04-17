@@ -86,11 +86,10 @@ public class ThumbnailLoader {
          requestMap.remove(view);
       }
 
-      if (imageLoader == null) {
-         imageLoader = defaultImageLoader;
-      }
-
-      final ThumbnailRequest request = new ThumbnailRequest(executor, view, url, minThumbnailSize, defaultInfoDownloader, listener, imageLoader);
+      final ThumbnailRequest request = new ThumbnailRequest(executor,
+            view, url, minThumbnailSize,
+            defaultInfoDownloader, imageLoader == null ? defaultImageLoader : imageLoader,
+            listener);
       requestMap.put(view, request);
       request.run();
    }

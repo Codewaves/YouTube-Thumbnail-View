@@ -13,13 +13,8 @@ abstract class CancellableTask implements Runnable {
       return canceled;
    }
 
-   public boolean isFinished() {
-      return finished;
-   }
-
    @Override
-   public void run() {
-   }
+   abstract public void run();
 
    void cancel() {
       if (canceled || finished) {

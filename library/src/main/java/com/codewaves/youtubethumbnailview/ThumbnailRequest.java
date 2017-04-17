@@ -31,8 +31,8 @@ class ThumbnailRequest extends CancellableTask {
                     @NonNull String url,
                     int minThumbnailSize,
                     @NonNull VideoInfoDownloader infoDownloader,
-                    @Nullable ThumbnailLoadingListener listener,
-                    @NonNull ImageLoader imageLoader) {
+                    @NonNull ImageLoader imageLoader,
+                    @Nullable ThumbnailLoadingListener listener) {
       this.executor = executor;
       this.view = view;
       this.url = url;
