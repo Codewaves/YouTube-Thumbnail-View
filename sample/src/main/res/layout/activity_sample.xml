@@ -10,6 +10,7 @@
       android:layout_width="320dp"
       android:layout_height="180dp"
       android:background="@android:color/black"
+      android:foreground="?android:attr/selectableItemBackground"
       app:youtube_minThumbnailWidth="320"
       app:youtube_titleMaxLines="1"
       app:youtube_titleTextSize="14sp"/>

@@ -134,6 +134,10 @@ public class ThumbnailView extends RelativeLayout {
       timeView.setVisibility(GONE);
 
       addView(timeView);
+
+      // Clickable
+      setClickable(true);
+      setFocusable(true);
    }
 
    @NonNull

@@ -29,6 +29,12 @@ public class SampleActivity extends AppCompatActivity {
       setContentView(R.layout.activity_sample);
 
       final ThumbnailView thumb = (ThumbnailView)findViewById(R.id.thumbnail);
+      thumb.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            Log.i(TAG, "Thumbnail clicked.");
+         }
+      });
 
       final Button clear = (Button)findViewById(R.id.clear);
       clear.setOnClickListener(new View.OnClickListener() {
