@@ -200,6 +200,10 @@ public class ThumbnailView extends RelativeLayout {
       loadThumbnail(url, listener, null);
    }
 
+   public void loadThumbnail(final @NonNull String url, final @Nullable ImageLoader imageLoader) {
+      loadThumbnail(url, null, imageLoader);
+   }
+
    public void loadThumbnail(final @NonNull String url, final @Nullable ThumbnailLoadingListener listener, final @Nullable ImageLoader imageLoader) {
       ThumbnailLoader.loadThumbnail(this, url, minThumbnailSize, listener, imageLoader);
    }
@@ -222,6 +226,11 @@ public class ThumbnailView extends RelativeLayout {
          thumbnailView.setImageDrawable(drawable);
       }
 
+      animateViews(length > 0);
+      isLoaded = true;
+   }
+
+   void animateViews(boolean animateTime) {
       if (!isLoaded) {
          final AlphaAnimation fade = new AlphaAnimation(0, 1);
          fade.setDuration(fadeDuration);
@@ -230,11 +239,10 @@ public class ThumbnailView extends RelativeLayout {
          if (titleVisible) {
             titleView.startAnimation(fade);
          }
-         if (timeVisible && length > 0) {
+         if (timeVisible && animateTime) {
             timeView.startAnimation(fade);
          }
          thumbnailView.startAnimation(fade);
       }
-      isLoaded = true;
    }
 }

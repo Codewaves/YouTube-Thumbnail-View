@@ -76,27 +76,7 @@ public class SampleActivity extends AppCompatActivity {
       picasso.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            thumb.loadThumbnail("https://www.youtube.com/watch?v=H7jtC8vjXw8", new ThumbnailLoadingListener() {
-               @Override
-               public void onLoadingStarted(@NonNull String url, @NonNull View view) {
-                  Log.i(TAG, "Thumbnail load started.");
-               }
-
-               @Override
-               public void onLoadingComplete(@NonNull String url, @NonNull View view) {
-                  Log.i(TAG, "Thumbnail load finished.");
-               }
-
-               @Override
-               public void onLoadingFailed(@NonNull String url, @NonNull View view, Throwable error) {
-                  Log.e(TAG, "Thumbnail load failed. " + error.getMessage());
-               }
-
-               @Override
-               public void onLoadingCanceled(@NonNull String url, @NonNull View view) {
-                  Log.i(TAG, "Thumbnail load canceled.");
-               }
-            }, new ImageLoader() {
+            thumb.loadThumbnail("https://www.youtube.com/watch?v=H7jtC8vjXw8", new ImageLoader() {
                @Override
                public Bitmap load(String url) throws IOException {
                   return Picasso.with(SampleActivity.this).load(url).get();

@@ -31,11 +31,11 @@ public class ThumbnailLoader {
 
    private volatile static ThumbnailLoader instance;
 
-   private static ThumbnailLoader initInstance(@NonNull Context context) {
+   private static ThumbnailLoader initInstance(@Nullable Context context, @Nullable String googleApiKey) {
       if (instance == null) {
          synchronized (ThumbnailLoader.class) {
             if (instance == null) {
-               instance = new ThumbnailLoader(context);
+               instance = new ThumbnailLoader(context, googleApiKey);
             }
          }
       }
@@ -43,7 +43,15 @@ public class ThumbnailLoader {
    }
 
    public static ThumbnailLoader initialize(@NonNull Context context) {
-      return initInstance(context);
+      return initInstance(context, null);
+   }
+
+   public static ThumbnailLoader initialize(@NonNull String googleApiKey) {
+      return initInstance(null, googleApiKey);
+   }
+
+   public static ThumbnailLoader initialize() {
+      return initInstance(null, null);
    }
 
    public ThumbnailLoader setVideoInfoDownloader(@NonNull VideoInfoDownloader defaultInfoDownloader) {
@@ -56,15 +64,17 @@ public class ThumbnailLoader {
       return this;
    }
 
-   private ThumbnailLoader(@NonNull Context context) {
-      String googleApiKey = null;
-      try {
-         final ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-         if (appInfo.metaData != null) {
-            googleApiKey = appInfo.metaData.getString("com.codewaves.youtubethumbnailview.ApiKey");
+   private ThumbnailLoader(@Nullable Context context, @Nullable String googleApiKey) {
+      if (context != null) {
+         try {
+            final ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            if (appInfo.metaData != null) {
+               googleApiKey = appInfo.metaData.getString("com.codewaves.youtubethumbnailview.ApiKey");
+            }
          }
-      } catch (PackageManager.NameNotFoundException e) {
-         // Ignore
+         catch (PackageManager.NameNotFoundException e) {
+            // Ignore
+         }
       }
 
       final BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
