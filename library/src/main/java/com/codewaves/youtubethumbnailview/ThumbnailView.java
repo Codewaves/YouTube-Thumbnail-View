@@ -173,16 +173,16 @@ public class ThumbnailView extends RelativeLayout {
       }
    }
 
-   public void displayThumbnail(@Nullable String title, int length, @Nullable Bitmap thumbnail) {
+   public void displayThumbnail(@Nullable String title, int length, @Nullable Bitmap bitmap) {
       ThumbnailLoader.cancelThumbnailLoad(this);
+      setThumbnailBitmap(bitmap);
       setThumbnailInfo(title, length);
-      thumbnailView.setImageBitmap(thumbnail);
    }
 
-   public void displayThumbnail(@Nullable String title, int length, @Nullable Drawable thumbnail) {
+   public void displayThumbnail(@Nullable String title, int length, @Nullable Drawable drawable) {
       ThumbnailLoader.cancelThumbnailLoad(this);
+      thumbnailView.setImageDrawable(drawable);
       setThumbnailInfo(title, length);
-      thumbnailView.setImageDrawable(thumbnail);
    }
 
    public void loadThumbnail(@NonNull String url) {
@@ -210,4 +210,9 @@ public class ThumbnailView extends RelativeLayout {
 
       isLoaded = true;
    }
+
+   void setThumbnailBitmap(@Nullable Bitmap bitmap) {
+      thumbnailView.setImageBitmap(bitmap);
+   }
+
 }
