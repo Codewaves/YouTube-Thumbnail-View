@@ -14,6 +14,8 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +31,7 @@ import java.lang.annotation.RetentionPolicy;
 public class ThumbnailView extends RelativeLayout {
    private static final int DEFAULT_TITLE_MAX_LINES = 1;
    private static final int DEFAULT_MIN_THUMBNAIL_SIZE = 320;
+   private static final int DEFAULT_FADE_DURATION = 500;
 
    private ImageView thumbnailView;
    private TextView titleView;
@@ -38,6 +41,7 @@ public class ThumbnailView extends RelativeLayout {
    private int minThumbnailSize;
    private boolean titleVisible;
    private boolean timeVisible;
+   private int fadeDuration;
 
    private int dpToPx(Context context, float dp) {
       final float scale = context.getResources().getDisplayMetrics().density;
@@ -73,6 +77,8 @@ public class ThumbnailView extends RelativeLayout {
 
       minThumbnailSize = attr.getInteger(R.styleable.ThumbnailView_youtube_minThumbnailWidth, DEFAULT_MIN_THUMBNAIL_SIZE);
 
+      fadeDuration = DEFAULT_FADE_DURATION;
+
       titleVisible = attr.getBoolean(R.styleable.ThumbnailView_youtube_titleVisible, true);
       timeVisible = attr.getBoolean(R.styleable.ThumbnailView_youtube_timeVisible, true);
 
@@ -96,7 +102,6 @@ public class ThumbnailView extends RelativeLayout {
       final float timeTextSize = attr.getDimension(R.styleable.ThumbnailView_youtube_timeTextSize, getResources().getDimension(R.dimen.time_text_size));
 
       attr.recycle();
-
 
       // Add thumbnailView image
       thumbnailView = new ImageView(context);
@@ -140,6 +145,10 @@ public class ThumbnailView extends RelativeLayout {
       setFocusable(true);
    }
 
+   public void setFadeDuration(int durationMillis) {
+      this.fadeDuration = durationMillis;
+   }
+
    @NonNull
    public TextView getTitleView() {
       return titleView;
@@ -181,12 +190,14 @@ public class ThumbnailView extends RelativeLayout {
       ThumbnailLoader.cancelThumbnailLoad(this);
       setThumbnailBitmap(bitmap);
       setThumbnailInfo(title, length);
+      showThumbnail();
    }
 
    public void displayThumbnail(@Nullable String title, int length, @Nullable Drawable drawable) {
       ThumbnailLoader.cancelThumbnailLoad(this);
       thumbnailView.setImageDrawable(drawable);
       setThumbnailInfo(title, length);
+      showThumbnail();
    }
 
    public void loadThumbnail(@NonNull String url) {
@@ -211,12 +222,22 @@ public class ThumbnailView extends RelativeLayout {
       if (timeVisible && length > 0) {
          timeView.setVisibility(VISIBLE);
       }
-
-      isLoaded = true;
    }
 
    void setThumbnailBitmap(@Nullable Bitmap bitmap) {
       thumbnailView.setImageBitmap(bitmap);
+   }
+
+   void showThumbnail() {
+      if (!isLoaded) {
+         final AlphaAnimation fade = new AlphaAnimation(0, 1);
+         fade.setDuration(fadeDuration);
+         fade.setInterpolator(new DecelerateInterpolator());
+         titleView.startAnimation(fade);
+         timeView.startAnimation(fade);
+         thumbnailView.startAnimation(fade);
+      }
+      isLoaded = true;
    }
 
 }

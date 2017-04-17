@@ -56,6 +56,7 @@ class ThumbnailRequest extends CancellableTask {
                // Update views
                view.setThumbnailBitmap(bitmap);
                view.setThumbnailInfo(info.getTitle(), info.getLength());
+               view.showThumbnail();
 
                finish();
                if (listener != null) {
