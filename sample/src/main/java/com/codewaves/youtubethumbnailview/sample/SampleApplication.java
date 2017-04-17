@@ -3,6 +3,7 @@ package com.codewaves.youtubethumbnailview.sample;
 import android.app.Application;
 
 import com.codewaves.youtubethumbnailview.ThumbnailLoader;
+import com.codewaves.youtubethumbnailview.downloader.OembedVideoInfoDownloader;
 
 /**
  * Created by Sergej Kravcenko on 4/16/2017.
@@ -14,6 +15,7 @@ public class SampleApplication extends Application {
    public void onCreate() {
       super.onCreate();
 
-      ThumbnailLoader.initialize(getApplicationContext());
+      ThumbnailLoader.initialize(getApplicationContext())
+            .setVideoInfoDownloader(new OembedVideoInfoDownloader());
    }
 }

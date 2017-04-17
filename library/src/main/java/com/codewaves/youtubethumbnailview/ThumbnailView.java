@@ -48,10 +48,6 @@ public class ThumbnailView extends RelativeLayout {
       return Math.round(dp * scale);
    }
 
-   @IntDef({VISIBLE, INVISIBLE, GONE})
-   @Retention(RetentionPolicy.SOURCE)
-   @interface Visibility {}
-
    public ThumbnailView(Context context) {
       this(context, null);
    }
@@ -172,32 +168,28 @@ public class ThumbnailView extends RelativeLayout {
       isLoaded = false;
    }
 
-   public void setTitleVisibility(@Visibility int visibility) {
-      titleVisible = visibility == VISIBLE;
+   public void setTitleVisibility(boolean visible) {
+      titleVisible = visible;
       if (isLoaded) {
-         titleView.setVisibility(visibility);
+         titleView.setVisibility(visible ? VISIBLE : GONE);
       }
    }
 
-   public void setTimeVisibility(@Visibility int visibility) {
-      timeVisible = visibility == VISIBLE;
+   public void setTimeVisibility(boolean visible) {
+      timeVisible = visible;
       if (isLoaded) {
-         timeView.setVisibility(visibility);
+         timeView.setVisibility(visible ? VISIBLE : GONE);
       }
    }
 
    public void displayThumbnail(@Nullable String title, int length, @Nullable Bitmap bitmap) {
       ThumbnailLoader.cancelThumbnailLoad(this);
-      setThumbnailBitmap(bitmap);
-      setThumbnailInfo(title, length);
-      showThumbnail();
+      setThumbnailAndShow(title, length, bitmap, null);
    }
 
    public void displayThumbnail(@Nullable String title, int length, @Nullable Drawable drawable) {
       ThumbnailLoader.cancelThumbnailLoad(this);
-      thumbnailView.setImageDrawable(drawable);
-      setThumbnailInfo(title, length);
-      showThumbnail();
+      setThumbnailAndShow(title, length, null, drawable);
    }
 
    public void loadThumbnail(@NonNull String url) {
@@ -212,32 +204,37 @@ public class ThumbnailView extends RelativeLayout {
       ThumbnailLoader.loadThumbnail(this, url, minThumbnailSize, listener, imageLoader);
    }
 
-   void setThumbnailInfo(@Nullable String title, int length) {
+   void setThumbnailAndShow(@Nullable String title, int length, @Nullable Bitmap bitmap, @Nullable Drawable drawable) {
       titleView.setText(title);
       if (titleVisible) {
          titleView.setVisibility(VISIBLE);
       }
 
       timeView.setText(Utils.secondsToTime(length));
-      if (timeVisible && length > 0) {
-         timeView.setVisibility(VISIBLE);
+      if (timeVisible) {
+         timeView.setVisibility(length > 0 ? VISIBLE : GONE);
       }
-   }
 
-   void setThumbnailBitmap(@Nullable Bitmap bitmap) {
-      thumbnailView.setImageBitmap(bitmap);
-   }
+      if (bitmap != null) {
+         thumbnailView.setImageBitmap(bitmap);
+      }
+      else if (drawable != null) {
+         thumbnailView.setImageDrawable(drawable);
+      }
 
-   void showThumbnail() {
       if (!isLoaded) {
          final AlphaAnimation fade = new AlphaAnimation(0, 1);
          fade.setDuration(fadeDuration);
          fade.setInterpolator(new DecelerateInterpolator());
-         titleView.startAnimation(fade);
-         timeView.startAnimation(fade);
+
+         if (titleVisible) {
+            titleView.startAnimation(fade);
+         }
+         if (timeVisible && length > 0) {
+            timeView.startAnimation(fade);
+         }
          thumbnailView.startAnimation(fade);
       }
       isLoaded = true;
    }
-
 }

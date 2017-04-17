@@ -54,9 +54,7 @@ class ThumbnailRequest extends CancellableTask {
          public void onDownloadFinished(@NonNull VideoInfo info, @Nullable Bitmap bitmap) {
             if (!isCanceled()) {
                // Update views
-               view.setThumbnailBitmap(bitmap);
-               view.setThumbnailInfo(info.getTitle(), info.getLength());
-               view.showThumbnail();
+               view.setThumbnailAndShow(info.getTitle(), info.getLength(), bitmap, null);
 
                finish();
                if (listener != null) {

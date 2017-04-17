@@ -112,7 +112,5 @@ public class SampleActivity extends AppCompatActivity {
             thumb.displayThumbnail("YouTube video test title", 12345, getResources().getDrawable(R.mipmap.ic_launcher));
          }
       });
-
-
    }
 }
