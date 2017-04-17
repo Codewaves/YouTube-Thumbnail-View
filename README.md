@@ -74,7 +74,7 @@ attribute list with default values:
       app:youtube_timeMarginRight="10dp"/>
 ```
 
-Simply load thumbnail using YouTube video url.
+and load thumbnail using YouTube video url.
 
 ``` java
 thumbnailView.loadThumbnail("https://www.youtube.com/watch?v=iCkYw3cRwLo");
@@ -83,7 +83,7 @@ thumbnailView.loadThumbnail("https://www.youtube.com/watch?v=iCkYw3cRwLo");
 ### Thumbnail image loaders
 
 By default ThumbnailLoader uses very simple code to download images from the web. It
-do not use any caching or advanced queueing. You are strongly advised to use image loading
+does not use any caching or advanced queueing. You are strongly advised to use image loading
 library like Picasso or UIL.
 
 ``` java

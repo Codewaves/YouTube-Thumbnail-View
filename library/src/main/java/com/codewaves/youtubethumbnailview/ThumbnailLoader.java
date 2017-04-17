@@ -65,11 +65,12 @@ public class ThumbnailLoader {
    }
 
    private ThumbnailLoader(@Nullable Context context, @Nullable String googleApiKey) {
+      String metaGoogleApiKey = googleApiKey;
       if (context != null) {
          try {
             final ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
             if (appInfo.metaData != null) {
-               googleApiKey = appInfo.metaData.getString("com.codewaves.youtubethumbnailview.ApiKey");
+               metaGoogleApiKey = appInfo.metaData.getString("com.codewaves.youtubethumbnailview.ApiKey");
             }
          }
          catch (PackageManager.NameNotFoundException e) {
@@ -81,7 +82,7 @@ public class ThumbnailLoader {
       executor = new ThreadPoolExecutor(DEFAULT_THREAD_POOL_SIZE, DEFAULT_THREAD_POOL_SIZE, 0L, TimeUnit.MILLISECONDS, taskQueue);
 
       requestMap = new WeakHashMap<>();
-      defaultInfoDownloader = new ApiVideoInfoDownloader(googleApiKey);
+      defaultInfoDownloader = new ApiVideoInfoDownloader(metaGoogleApiKey);
       defaultImageLoader = new SimpleImageLoader();
    }
 
