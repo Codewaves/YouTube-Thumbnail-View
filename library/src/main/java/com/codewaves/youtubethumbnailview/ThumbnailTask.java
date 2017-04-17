@@ -1,90 +1,70 @@
 package com.codewaves.youtubethumbnailview;
 
-
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.codewaves.youtubethumbnailview.downloader.VideoInfoDownloader;
-import com.codewaves.youtubethumbnailview.listener.ThumbnailLoadingListener;
-import com.codewaves.youtubethumbnailview.listener.VideoInfoDownloadListener;
 
-import java.util.concurrent.ThreadPoolExecutor;
+import java.io.IOException;
 
 /**
- * Created by Sergej Kravcenko on 4/16/2017.
+ * Created by Sergej Kravcenko on 4/15/2017.
  * Copyright (c) 2017 Sergej Kravcenko
  */
 
-class ThumbnailTask extends CancellableTask {
-   private final ThreadPoolExecutor executor;
-   private final ThumbnailView view;
+class ThumbnailTask implements Runnable {
    private final String url;
-   private final int minThumbnailSize;
+   private final int minThumbnailWidth;
    private final VideoInfoDownloader infoDownloader;
-   private final ThumbnailLoadingListener listener;
    private final ImageLoader imageLoader;
+   private final ThumbnailDownloadListener listener;
+   private final Handler handler;
 
-   private VideoInfoTask infoTask;
-
-   ThumbnailTask(@NonNull ThreadPoolExecutor executor,
-                 @NonNull ThumbnailView view,
-                 @NonNull String url,
-                 int minThumbnailSize,
+   ThumbnailTask(@NonNull String url,
+                 int minThumbnailWidth,
                  @NonNull VideoInfoDownloader infoDownloader,
-                 @Nullable ThumbnailLoadingListener listener,
-                 @NonNull ImageLoader imageLoader) {
-      this.executor = executor;
-      this.view = view;
+                 @NonNull ImageLoader imageLoader,
+                 @NonNull ThumbnailDownloadListener listener,
+                 @NonNull Handler handler) {
       this.url = url;
-      this.minThumbnailSize = minThumbnailSize;
+      this.minThumbnailWidth = minThumbnailWidth;
       this.infoDownloader = infoDownloader;
-      this.listener = listener;
       this.imageLoader = imageLoader;
+      this.listener = listener;
+      this.handler = handler;
    }
 
    @Override
    public void run() {
-      if (listener != null) {
-         listener.onLoadingStarted(url, view);
+      try {
+         final VideoInfo info = infoDownloader.download(url, minThumbnailWidth);
+         final Bitmap bitmap = imageLoader.load(info.getThumbnailUrl());
+         postTask(new Runnable() {
+            @Override
+            public void run() {
+               listener.onDownloadFinished(info, bitmap);
+            }
+         });
       }
-
-      final Handler handler = new Handler();
-      infoTask = new VideoInfoTask(url, minThumbnailSize, infoDownloader, new VideoInfoDownloadListener() {
-         @Override
-         public void onDownloadFinished(@NonNull VideoInfo info) {
-            if (!isCanceled()) {
-               // Update views and start thumbnailView download
-               view.setThumbnailInfo(info.getTitle(), info.getLength());
-               imageLoader.load(info.getThumbnailUrl(), view.getThumbnailView());
-
-               finish();
-               if (listener != null) {
-                  listener.onLoadingComplete(url, view);
-               }
-            }
-         }
-
-         @Override
-         public void onDownloadFailed(@NonNull Throwable error) {
-            finish();
-            if (listener != null) {
-               listener.onLoadingFailed(url, view, error);
-            }
-         }
-      }, handler);
-      executor.execute(infoTask);
+      catch (IOException e) {
+         postFailure(e);
+      }
+      catch (Exception e) {
+         postFailure(e);
+      }
    }
 
-   @Override
-   public void onCancel() {
-      if (infoTask != null) {
-         executor.remove(infoTask);
-      }
-      imageLoader.cancel(view.getThumbnailView());
+   private void postFailure(@NonNull final Throwable failCause) {
+      postTask(new Runnable() {
+         @Override
+         public void run() {
+            listener.onDownloadFailed(failCause);
+         }
+      });
+   }
 
-      if (listener != null) {
-         listener.onLoadingCanceled(url, view);
-      }
+   private void postTask(@NonNull Runnable task) {
+      handler.post(task);
    }
 }

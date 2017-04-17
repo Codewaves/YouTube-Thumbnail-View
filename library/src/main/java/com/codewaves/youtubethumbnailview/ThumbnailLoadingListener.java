@@ -1,4 +1,4 @@
-package com.codewaves.youtubethumbnailview.listener;
+package com.codewaves.youtubethumbnailview;
 
 import android.support.annotation.NonNull;
 import android.view.View;

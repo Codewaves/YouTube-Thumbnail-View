@@ -18,9 +18,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.codewaves.youtubethumbnailview.listener.ThumbnailLoadingListener;
-import com.codewaves.youtubethumbnailview.listener.VideoInfoDownloadListener;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 

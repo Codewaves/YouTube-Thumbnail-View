@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 
 import com.codewaves.youtubethumbnailview.downloader.ApiVideoInfoDownloader;
 import com.codewaves.youtubethumbnailview.downloader.VideoInfoDownloader;
-import com.codewaves.youtubethumbnailview.listener.ThumbnailLoadingListener;
 
 import java.util.WeakHashMap;
 import java.util.concurrent.BlockingQueue;
@@ -28,7 +27,7 @@ public class ThumbnailLoader {
    private VideoInfoDownloader defaultInfoDownloader;
    private ImageLoader defaultImageLoader;
 
-   private WeakHashMap<ThumbnailView, ThumbnailTask> taskMap;
+   private WeakHashMap<ThumbnailView, ThumbnailRequest> requestMap;
 
    private volatile static ThumbnailLoader instance;
 
@@ -71,9 +70,9 @@ public class ThumbnailLoader {
       final BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
       executor = new ThreadPoolExecutor(DEFAULT_THREAD_POOL_SIZE, DEFAULT_THREAD_POOL_SIZE, 0L, TimeUnit.MILLISECONDS, taskQueue);
 
-      taskMap = new WeakHashMap<>();
+      requestMap = new WeakHashMap<>();
       defaultInfoDownloader = new ApiVideoInfoDownloader(googleApiKey);
-      defaultImageLoader = new SimpleImageLoader(executor);
+      defaultImageLoader = new SimpleImageLoader();
    }
 
    private void loadThumbnailInt(@NonNull ThumbnailView view,
@@ -81,19 +80,19 @@ public class ThumbnailLoader {
                                  int minThumbnailSize,
                                  @Nullable ThumbnailLoadingListener listener,
                                  @Nullable ImageLoader imageLoader) {
-      final ThumbnailTask existingTask = taskMap.get(view);
-      if (existingTask != null) {
-         existingTask.cancel();
-         taskMap.remove(view);
+      final ThumbnailRequest existingRequest = requestMap.get(view);
+      if (existingRequest != null) {
+         existingRequest.cancel();
+         requestMap.remove(view);
       }
 
       if (imageLoader == null) {
          imageLoader = defaultImageLoader;
       }
 
-      final ThumbnailTask task = new ThumbnailTask(executor, view, url, minThumbnailSize, defaultInfoDownloader, listener, imageLoader);
-      taskMap.put(view, task);
-      task.run();
+      final ThumbnailRequest request = new ThumbnailRequest(executor, view, url, minThumbnailSize, defaultInfoDownloader, listener, imageLoader);
+      requestMap.put(view, request);
+      request.run();
    }
 
    static void loadThumbnail(@NonNull ThumbnailView view,
@@ -109,10 +108,10 @@ public class ThumbnailLoader {
    }
 
    private void cancelThumbnailLoadInt(@NonNull ThumbnailView view) {
-      final ThumbnailTask existingTask = taskMap.get(view);
-      if (existingTask != null) {
-         existingTask.cancel();
-         taskMap.remove(view);
+      final ThumbnailRequest existingRequest = requestMap.get(view);
+      if (existingRequest != null) {
+         existingRequest.cancel();
+         requestMap.remove(view);
       }
    }
 

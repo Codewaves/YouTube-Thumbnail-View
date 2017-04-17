@@ -1,5 +1,6 @@
 package com.codewaves.youtubethumbnailview.sample;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,12 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import com.codewaves.youtubethumbnailview.ImageLoader;
 import com.codewaves.youtubethumbnailview.ThumbnailView;
-import com.codewaves.youtubethumbnailview.listener.ThumbnailLoadingListener;
+import com.codewaves.youtubethumbnailview.ThumbnailLoadingListener;
 import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
 
 /**
  * Created by Sergej Kravcenko on 4/14/2017.
@@ -90,13 +92,8 @@ public class SampleActivity extends AppCompatActivity {
                }
             }, new ImageLoader() {
                @Override
-               public void load(String url, ImageView imageView) {
-                  Picasso.with(SampleActivity.this).load(url).into(imageView);
-               }
-
-               @Override
-               public void cancel(ImageView imageView) {
-                  Picasso.with(SampleActivity.this).cancelRequest(imageView);
+               public Bitmap load(String url) throws IOException {
+                  return Picasso.with(SampleActivity.this).load(url).get();
                }
             });
          }

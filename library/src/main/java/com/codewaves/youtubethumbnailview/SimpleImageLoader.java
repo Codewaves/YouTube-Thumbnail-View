@@ -1,15 +1,15 @@
 package com.codewaves.youtubethumbnailview;
 
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.widget.ImageView;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.annotation.Nullable;
 
-
-import java.lang.ref.WeakReference;
-import java.util.WeakHashMap;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.io.IOException;
+import java.io.InputStream;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by Sergej Kravcenko on 4/17/2017.
@@ -18,38 +18,25 @@ import okhttp3.OkHttpClient;
 
 class SimpleImageLoader implements ImageLoader {
    private OkHttpClient client = new OkHttpClient();
-   private ThreadPoolExecutor executor;
-   private WeakHashMap<ImageView, ImageDownloadTask> taskMap;
-
-   SimpleImageLoader(@NonNull ThreadPoolExecutor executor) {
-      this.executor = executor;
-      this.taskMap = new WeakHashMap<>();
-   }
 
    @Override
-   public void load(String url, ImageView imageView) {
-      if (url == null || imageView == null) {
-         return;
+   @Nullable
+   public Bitmap load(String url) throws IOException {
+      if (url == null) {
+         return null;
       }
 
-      final Handler handler = new Handler();
-      final WeakReference<ImageView> viewRef = new WeakReference<>(imageView);
-      final ImageDownloadTask task = new ImageDownloadTask(client, url, viewRef, handler);
+      final Request request = new Request.Builder()
+            .url(url)
+            .build();
 
-      taskMap.put(imageView, task);
-      executor.execute(task);
-   }
-
-   @Override
-   public void cancel(ImageView imageView) {
-      if (imageView == null) {
-         return;
+      final Response response = client.newCall(request).execute();
+      try {
+         final InputStream inputStream = response.body().byteStream();
+         return BitmapFactory.decodeStream(inputStream);
       }
-
-      final ImageDownloadTask existingTask = taskMap.get(imageView);
-      if (existingTask != null) {
-         existingTask.cancel();
-         taskMap.remove(imageView);
+      finally {
+         response.close();
       }
    }
 }

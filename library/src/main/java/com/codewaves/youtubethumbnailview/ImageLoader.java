@@ -1,6 +1,9 @@
 package com.codewaves.youtubethumbnailview;
 
-import android.widget.ImageView;
+import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
+
+import java.io.IOException;
 
 /**
  * Created by Sergej Kravcenko on 4/15/2017.
@@ -8,6 +11,6 @@ import android.widget.ImageView;
  */
 
 public interface ImageLoader {
-   void load(String url, ImageView imageView);
-   void cancel(ImageView imageView);
+   @Nullable
+   Bitmap load(String url) throws IOException;
 }
