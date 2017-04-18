@@ -5,6 +5,11 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c0838f0b263745d3874238c60bd032ef)](https://www.codacy.com/app/Codewaves/YouTube-Thumbnail-View?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Codewaves/YouTube-Thumbnail-View&amp;utm_campaign=Badge_Grade)
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Codewaves/YouTube-Thumbnail-View/blob/master/LICENSE.txt)
 
+YouTube thumbnail library. Library retrieves video information using YouTube links and displays it
+as clickable thumbnail.
+
+![](images/sample.png)
+
 ## Download
 
 Download [the latest AAR][1] or grab via Gradle:
