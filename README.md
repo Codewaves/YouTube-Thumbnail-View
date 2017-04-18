@@ -1,6 +1,6 @@
 # YouTube Thumbnail View
 
-[ ![Core](https://api.bintray.com/packages/codewaves/maven/library/images/download.svg) ](https://bintray.com/codewaves/maven/library/_latestVersion)
+[![Download](https://api.bintray.com/packages/codewaves/maven/youtube-thumbnail-view%3Alibrary/images/download.svg) ](https://bintray.com/codewaves/maven/youtube-thumbnail-view%3Alibrary/_latestVersion)
 [![Build Status](https://travis-ci.org/Codewaves/YouTube-Thumbnail-View.svg)](https://travis-ci.org/Codewaves/YouTube-Thumbnail-View)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c0838f0b263745d3874238c60bd032ef)](https://www.codacy.com/app/Codewaves/YouTube-Thumbnail-View?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Codewaves/YouTube-Thumbnail-View&amp;utm_campaign=Badge_Grade)
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Codewaves/YouTube-Thumbnail-View/blob/master/LICENSE.txt)

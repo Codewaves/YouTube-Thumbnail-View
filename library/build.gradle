@@ -3,7 +3,7 @@ apply from: '../dependencies.gradle'
 
 ext {
     bintrayRepo = 'maven'
-    bintrayName = 'library'
+    bintrayName = 'youtube-thumbnail-view:library'
 
     publishedGroupId = 'com.codewaves.youtubethumbnailview'
     libraryName = 'YouTube-Thumbnail-View'
