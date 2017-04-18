@@ -3,11 +3,11 @@ apply from: '../dependencies.gradle'
 
 ext {
     bintrayRepo = 'maven'
-    bintrayName = 'youtube-thumbnail-view'
+    bintrayName = 'library'
 
     publishedGroupId = 'com.codewaves.youtubethumbnailview'
     libraryName = 'YouTube-Thumbnail-View'
-    artifact = 'youtube-thumbnail-view'
+    artifact = 'library'
 
     libraryDescription = 'Android view to display YouTube video thumbnail and information'
 
