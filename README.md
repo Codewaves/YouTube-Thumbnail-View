@@ -14,14 +14,14 @@ as clickable thumbnail.
 
 Download [the latest AAR][1] or grab via Gradle:
 ```groovy
-compile 'com.codewaves.youtubethumbnailview:library:0.9.1'
+compile 'com.codewaves.youtubethumbnailview:library:0.9.2'
 ```
 or Maven:
 ```xml
 <dependency>
   <groupId>com.codewaves.youtubethumbnailview</groupId>
   <artifactId>library</artifactId>
-  <version>0.9.1</version>
+  <version>0.9.2</version>
 </dependency>
 ```
 
