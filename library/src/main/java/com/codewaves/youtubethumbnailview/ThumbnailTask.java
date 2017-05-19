@@ -20,25 +20,29 @@ class ThumbnailTask implements Runnable {
    private final ImageLoader imageLoader;
    private final ThumbnailDownloadListener listener;
    private final Handler handler;
+   private final boolean ignoreCache;
 
    ThumbnailTask(@NonNull String url,
                  int minThumbnailWidth,
                  @NonNull VideoInfoDownloader infoDownloader,
                  @NonNull ImageLoader imageLoader,
                  @NonNull ThumbnailDownloadListener listener,
-                 @NonNull Handler handler) {
+                 @NonNull Handler handler,
+                 boolean ignoreCache) {
       this.url = url;
       this.minThumbnailWidth = minThumbnailWidth;
       this.infoDownloader = infoDownloader;
       this.imageLoader = imageLoader;
       this.listener = listener;
       this.handler = handler;
+      this.ignoreCache = ignoreCache;
    }
 
    @Override
    public void run() {
       try {
-         final VideoInfo info = infoDownloader.download(url, minThumbnailWidth);
+         // Check cache first
+         final VideoInfo info = fetchInfo();
          final Bitmap bitmap = imageLoader.load(info.getThumbnailUrl());
          postTask(new Runnable() {
             @Override
@@ -66,5 +70,17 @@ class ThumbnailTask implements Runnable {
 
    private void postTask(@NonNull Runnable task) {
       handler.post(task);
+   }
+
+   private VideoInfo fetchInfo() throws Exception {
+      VideoInfo info = null;
+      if (!ignoreCache) {
+         info = ThumbnailLoader.findInfoInCache(url);
+      }
+      if (info == null) {
+         info = infoDownloader.download(url, minThumbnailWidth);
+         ThumbnailLoader.putInfoIntoCache(url, info);
+      }
+      return info;
    }
 }

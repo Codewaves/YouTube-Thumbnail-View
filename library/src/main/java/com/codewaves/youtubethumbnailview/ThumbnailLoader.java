@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.LruCache;
 
 import com.codewaves.youtubethumbnailview.downloader.ApiVideoInfoDownloader;
 import com.codewaves.youtubethumbnailview.downloader.VideoInfoDownloader;
@@ -22,10 +23,13 @@ import java.util.concurrent.TimeUnit;
 
 public class ThumbnailLoader {
    private static final int DEFAULT_THREAD_POOL_SIZE = 3;
+   private static final int DEFAULT_INFO_CACHE_SIZE = 64;
 
    private ThreadPoolExecutor executor;
    private VideoInfoDownloader defaultInfoDownloader;
    private ImageLoader defaultImageLoader;
+   private boolean isCacheEnabled = true;
+   private LruCache<String, VideoInfo> infoCache = new LruCache<>(DEFAULT_INFO_CACHE_SIZE);
 
    private WeakHashMap<ThumbnailView, ThumbnailRequest> requestMap;
 
@@ -61,6 +65,11 @@ public class ThumbnailLoader {
 
    public ThumbnailLoader setImageLoader(@NonNull ImageLoader defaultImageLoader) {
       this.defaultImageLoader = defaultImageLoader;
+      return this;
+   }
+
+   public ThumbnailLoader enableInfoCache(boolean enable) {
+      this.isCacheEnabled = enable;
       return this;
    }
 
@@ -100,7 +109,8 @@ public class ThumbnailLoader {
       final ThumbnailRequest request = new ThumbnailRequest(executor,
             view, url, minThumbnailSize,
             defaultInfoDownloader, imageLoader == null ? defaultImageLoader : imageLoader,
-            listener);
+            listener,
+            !isCacheEnabled);
       requestMap.put(view, request);
       request.run();
    }
@@ -127,5 +137,19 @@ public class ThumbnailLoader {
 
    static void cancelThumbnailLoad(@NonNull ThumbnailView view) {
       instance.cancelThumbnailLoadInt(view);
+   }
+
+   static VideoInfo findInfoInCache(@NonNull String url) {
+      if (instance == null) {
+         throw new IllegalStateException("Youtube thumbnail library is not initialized");
+      }
+      return instance.infoCache.get(url);
+   }
+
+   static void putInfoIntoCache(@NonNull String url, @NonNull VideoInfo info) {
+      if (instance == null) {
+         throw new IllegalStateException("Youtube thumbnail library is not initialized");
+      }
+      instance.infoCache.put(url, info);
    }
 }

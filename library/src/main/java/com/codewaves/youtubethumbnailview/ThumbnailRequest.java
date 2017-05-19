@@ -23,6 +23,7 @@ class ThumbnailRequest extends CancellableTask {
    private final VideoInfoDownloader infoDownloader;
    private final ThumbnailLoadingListener listener;
    private final ImageLoader imageLoader;
+   private final boolean ignoreCache;
 
    private ThumbnailTask task;
 
@@ -32,7 +33,8 @@ class ThumbnailRequest extends CancellableTask {
                     int minThumbnailSize,
                     @NonNull VideoInfoDownloader infoDownloader,
                     @NonNull ImageLoader imageLoader,
-                    @Nullable ThumbnailLoadingListener listener) {
+                    @Nullable ThumbnailLoadingListener listener,
+                    boolean ignoreCache) {
       this.executor = executor;
       this.view = view;
       this.url = url;
@@ -40,6 +42,7 @@ class ThumbnailRequest extends CancellableTask {
       this.infoDownloader = infoDownloader;
       this.listener = listener;
       this.imageLoader = imageLoader;
+      this.ignoreCache = ignoreCache;
    }
 
    @Override
@@ -72,7 +75,7 @@ class ThumbnailRequest extends CancellableTask {
                }
             }
          }
-      }, handler);
+      }, handler, ignoreCache);
       executor.execute(task);
    }
 
